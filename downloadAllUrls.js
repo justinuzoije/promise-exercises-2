@@ -9,22 +9,28 @@ var urls = [
   'https://en.wikipedia.org/wiki/Google_Chrome'
 ];
 
-var htmlPromises = urls.map(function(url) {
-  return request.get(url);
-});
 
-Promise.all(htmlPromises)
-  .then(function(htmls) {
-    var writeFilePromises = htmls.map(function(html, idx) {
-      return fs.writeFile(idx + '.html', html);
-    })
-    return Promise.all(writeFilePromises);
-  })
-  .then(function() {
-    console.log('It worked.');
-  })
-  .catch(function(err) {
-    console.log(err.message);
+
+function downloadAllUrls(urls) {
+  var htmlPromises = urls.map(function(url) {
+    return request.get(url);
   });
 
+  return Promise.all(htmlPromises)
+    .then(function(htmls) {
+      var writeFilePromises = htmls.map(function(html, idx) {
+        return fs.writeFile(idx + '.html', html);
+      }); //semicolon
+      return Promise.all(writeFilePromises);
+    }); //semicolon
+
+}
+
+
 downloadAllUrls(urls)
+  .then(function() {
+    console.log("It worked");
+  })
+  .catch(function() {
+    console.log(err.message);
+  });
